@@ -38,6 +38,7 @@ public class DBConfiguration {
 		return new HikariDataSource(hikariConfig());
 	}
 
+	//Bean : name 속성 설정시 속성 값으로 호출 가능, 메서드명으로는 호출 불가능
 	@Bean(name="factory")
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
