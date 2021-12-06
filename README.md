@@ -1,2 +1,2 @@
-# SpringBootProject
-Spring Boot Simple Settings
+# Board
+Spring Boot Board Simple Example
