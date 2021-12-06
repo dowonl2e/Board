@@ -17,7 +17,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * @author dowonlee
- * DBConfiguration 설정 
+ * DBConfiguration 설정
  */
 
 @Configuration //자바 기반의 설정 파일로 인식
