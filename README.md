@@ -1,2 +1,5 @@
-# Simple Board Project
-Spring Boot Board Simple Example
+# Simple Board 
+
+개발 환경
+- Framework : Spring Boot
+- Library : HikariCP
