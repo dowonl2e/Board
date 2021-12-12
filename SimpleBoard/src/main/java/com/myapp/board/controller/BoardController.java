@@ -17,7 +17,6 @@ public class BoardController {
 	/*
 	 * Spring 4.3 이상 기존 RequestMapping의 RequestMethod.GET, RequestMethod.POST를 GetMapping, PostMapping으로 나누어 사용 가능
 	 */
-	
 	@GetMapping(value = "/board/list")
 	public String list(final BoardDTO to, Model model) {
 		
