@@ -49,7 +49,7 @@ public class ServiceTests {
 			to.setWriter("서비스");
 			
 			boolean result = boardService.setBoard(to);
-			if(!result) {
+			if(!result){
 				System.out.println("게시물 등록 실패");
 			}
 			else {
