@@ -18,25 +18,12 @@ class SimpleBoardApplicationTests {
 	@Test
 	void contextLoads() {}
 
-	/*
-	@Test
-	public void testByApplicationContext() {
-		try {
-			System.out.println("==세션팩토리 체크 By Context==");
-			System.out.println(context.getBean("sqlSessionFactory"));
-			// -> Bean에 name을 설정하면 메서드명으로 가져올 수 
-			System.out.println("=========================");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	*/
-	
 	@Test
 	public void testByApplicationContextByBeanName() {
 		try {
 			System.out.println("==세션팩토리 체크 By Context BeanName==");
+			// -> Bean에 name을 설정하면 메서드명으로 가져올 수 없다.
+			// System.out.println(context.getBean("sqlSessionFactory"));
 			System.out.println(context.getBean("factory"));
 			System.out.println("=========================");
 
