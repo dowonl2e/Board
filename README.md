@@ -1,2 +1,3 @@
-# Board
-Spring Boot Board Simple Example
+# Simple Board 
+
+Spring Boot & HikariCP
