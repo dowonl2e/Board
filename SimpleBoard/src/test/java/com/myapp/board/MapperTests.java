@@ -28,7 +28,7 @@ class MapperTests {
 			to.setWriter("테스터2");
 	
 			int result = boardMapper.insertBoard(to);
-			System.out.println("결과는 " + result + "입니다.");
+			System.out.println("결과는 " + result);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
