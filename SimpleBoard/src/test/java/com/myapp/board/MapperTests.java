@@ -1,16 +1,16 @@
 package com.myapp.board;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myapp.board.domain.BoardDTO;
 import com.myapp.board.mapper.BoardMapper;
-import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 @SpringBootTest
 class MapperTests {
@@ -21,6 +21,7 @@ class MapperTests {
 	@Test
 	public void insertBoardTest() {
 		try {
+			
 			BoardDTO to = new BoardDTO();
 			to.setTitle("2번 게시글 제목");
 			to.setContent("2번 게시글 내용");
@@ -50,6 +51,64 @@ class MapperTests {
 						System.out.println("등록일 : " + boardvo.getInsert_time());
 						System.out.println("---------------------");
 					}
+				}
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void updateBoardTest() {
+		try {
+			BoardDTO boarddto = new BoardDTO();
+			boarddto.setNum((long)1);
+			boarddto.setTitle("1번 게시물 제목 수정");
+			boarddto.setContent("1번 게시물 내용 수정");
+			boarddto.setWriter("수정자");
+			
+			int result = boardMapper.updateBoard(boarddto);
+			if(result == 1) {
+				BoardDTO boardvo = boardMapper.selectBoard((long)1);
+				
+				String boardJson = new ObjectMapper().writeValueAsString(boardvo);
+				
+				System.out.println("수정 후 게시물 조회");
+				System.out.println("---------------");
+				System.out.println(boardJson);
+				System.out.println("---------------");
+				
+			}
+			else {
+				System.out.println("업데이트 실패");
+			}
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void selectBoardTest() {
+		try {
+			BoardDTO boardvo = boardMapper.selectBoard((long)1);
+			
+			String boardJson = new ObjectMapper().writeValueAsString(boardvo);
+			
+			System.out.println("게시물 조회");
+			System.out.println("---------------");
+			System.out.println(boardJson);
+			System.out.println("---------------");
+			
+			if(!ObjectUtils.isEmpty(boardvo)) {
+				int result = boardMapper.updateBoardVisitCnt((long)1);
+				if(result == 1) {
+					System.out.println("조회 수 업데이트 성공");
+				}
+				else {
+					System.out.println("조회 수 업데이트 실패");
 				}
 			}
 		}

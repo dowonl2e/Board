@@ -16,8 +16,7 @@ class SimpleBoardApplicationTests {
 	private SqlSessionFactory sessionFactory;
 
 	@Test
-	void contextLoads() {
-	}
+	void contextLoads() {}
 
 	/*
 	@Test

@@ -10,7 +10,6 @@
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE DELETE_YN = 'N'
-		ORDER BY NUM ASC
 	</select>
 	
 	<select id="selectBoardList" parameterType="BoardDTO" resultType="BoardDTO">
@@ -40,4 +39,44 @@
 			, NULL
 		)
 	</insert>
+	
+	<update id="updateBoard" parameterType="BoardDTO">
+		UPDATE BOARD
+		SET UPDATE_TIME = NOW()
+		<if test='writer != null and !writer.equals("")'>
+			, WRITER = #{writer}
+		</if>
+		<if test='title != null and !title.equals("")'>
+			, TITLE = #{title}
+		</if>
+		<if test='content != null and !content.equals("")'>
+			, CONTENT = #{content}
+		</if>
+		, NOTICE_YN = IFNULL(#{notice_yn}, 'N')
+		, SECRET_YN = IFNULL(#{secret_yn}, 'N')
+		WHERE NUM = #{num}
+	</update>
+	
+	<update id="updateBoardVisitCnt" parameterType="long">
+		UPDATE BOARD
+		SET VISIT_CNT = VISIT_CNT+1
+		WHERE NUM = #{num}
+	</update>
+	
+	<select id="selectBoard" parameterType="long" resultType="BoardDTO">
+		SELECT <include refid="boardColumns" />
+		FROM BOARD
+		WHERE NUM = #{num}
+		AND DELETE_YN = 'N'
+	</select>
+	
+	<update id="deleteBoard" parameterType="long">
+		UPDATE BOARD
+		SET DELETE_TIME = NOW()
+		, DELETE_YN = 'Y'
+		<if test='writer != null and !writer.equals("")'>
+			, WRITER = #{writer}
+		</if>
+		WHERE NUM = #{num}
+	</update>
 </mapper>
