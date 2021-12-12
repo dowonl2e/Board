@@ -58,7 +58,7 @@
 	</update>
 	
 	<update id="updateBoardVisitCnt" parameterType="long">
-		UPDATE BOARD
+		UPDATE BOARD 
 		SET VISIT_CNT = VISIT_CNT+1
 		WHERE NUM = #{num}
 	</update>
