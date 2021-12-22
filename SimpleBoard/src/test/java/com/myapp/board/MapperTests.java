@@ -48,7 +48,7 @@ class MapperTests {
 						System.out.println("번호 : " + boardvo.getNum());
 						System.out.println("타이틀 : " + boardvo.getTitle());
 						System.out.println("내용 : " + boardvo.getContent());
-						System.out.println("등록일 : " + boardvo.getInsert_time());
+						System.out.println("등록일 : " + boardvo.getInsertTime());
 						System.out.println("---------------------");
 					}
 				}

@@ -54,17 +54,17 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Override
 	public int removeBoard(BoardDTO to) {
-		int result = 0;
+//		int result = 0;
+//		
+//		BoardDTO vo = boardMapper.selectBoard(to.getNum());
+//		if(ObjectUtils.isEmpty(vo)) {
+//			result = -1;
+//		}
+//		else {
+//			result = boardMapper.deleteBoard(to);
+//		}
 		
-		BoardDTO vo = boardMapper.selectBoard(to.getNum());
-		if(ObjectUtils.isEmpty(vo)) {
-			result = -1;
-		}
-		else {
-			result = boardMapper.deleteBoard(to);
-		}
-		
-		return result;
+		return boardMapper.deleteBoard(to);
 	}
 
 }

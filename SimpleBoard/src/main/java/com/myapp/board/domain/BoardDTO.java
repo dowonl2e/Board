@@ -20,18 +20,18 @@ public class BoardDTO {
 	
 	private String writer; //작성
 	
-	private int visit_cnt; //조회수 
+	private int visitCnt; //조회수 
 	
-	private String notice_yn; //공지여부 
+	private String noticeYn; //공지여부 
 	
-	private String delete_yn; //삭제여부 
+	private String deleteYn; //삭제여부 
 	
-	private String secret_yn; //비밀글 여부
+	private String secretYn; //비밀글 여부
 	
-	private LocalDateTime insert_time; //등록일
+	private LocalDateTime insertTime; //등록일
 	
-	private LocalDateTime update_time; //수정일
+	private LocalDateTime updateTime; //수정일
 	
-	private LocalDateTime delete_time; //삭제일
+	private LocalDateTime deleteTime; //삭제일
 	
 }
