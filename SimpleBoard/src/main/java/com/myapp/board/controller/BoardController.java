@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.myapp.board.constraint.Method;
 import com.myapp.board.domain.BoardDTO;
 import com.myapp.board.service.BoardService;
+import com.myapp.board.util.UiUtils;
 
 @Controller
-public class BoardController {
+public class BoardController extends UiUtils {
 
 	@Autowired
 	private BoardService boardService;
@@ -47,34 +49,32 @@ public class BoardController {
 	}
 	
 	@PostMapping(value = "/board/register")
-	public String registerBoard(final BoardDTO params) {
+	public String registerBoard(final BoardDTO params, Model model) {
 		try {
 			boolean result = boardService.setBoard(params);
 			if(!result) {
-				System.out.println("게시물 등록에 실패했습니다.");
+				return showMessageWithRedirect("게시물 등록에 실패했습니다.", "/board/list", Method.GET, null, model);
 			}
 		}
 		catch (DataAccessException e){
-			System.out.println("데이터 처리 과정에 오류가 발생하였습니다.");
+			return showMessageWithRedirect("데이터 처리 과정에 오류가 발생하였습니다.", "/board/list", Method.GET, null, model);
 		}
 		catch(Exception e) {
-			System.out.println("시스템에 문제가 발생하였습니다.");
+			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", "/board/list", Method.GET, null, model);
 		}
-		return "redirect:/board/list"; 
+		return showMessageWithRedirect("게시물 등록이 완료되었습니다.", "/board/list", Method.GET, null, model);
 	}
 	
 	@GetMapping(value = "/board/view")
 	public String view(@RequestParam(value = "num", required=false) Long num, Model model) {
 		
 		if(num == null) {
-			System.out.println("옳바르지 않은 접근입니다.");
-			return "redirect:/board/list";
+			return showMessageWithRedirect("옳바르지 않은 접근입니다.", "/board/list", Method.GET, null, model);
 		}
 		
 		BoardDTO board = boardService.getBoard(num);
 		if(ObjectUtils.isEmpty(board)) {
-			System.out.println("게시물이 없습니다.");
-			return "redirect:/board/list"; 
+			return showMessageWithRedirect("조회 가능한 게시물이 없습니다.", "/board/list", Method.GET, null, model);
 		}
 		
 		model.addAttribute("board", board);
@@ -83,24 +83,23 @@ public class BoardController {
 	}
 	
 	@PostMapping(value = "/board/delete")
-	public String deleteBoard(final BoardDTO params) {
+	public String deleteBoard(final BoardDTO params, Model model) {
 		try {
 			if(params.getNum() == null) {
-				System.out.println("옳바르지 않은 접근입니다.");
-				return "redirect:/board/list";
+				return showMessageWithRedirect("옳바르지 않은 접근입니다.", "/board/list", Method.GET, null, model);
 			}
 			
 			int result = boardService.removeBoard(params);
 			if(result <= 0) {
-				System.out.println("삭제할 게시물이 없습니다.");
+				return showMessageWithRedirect("삭제할 게시물이 없습니다.", "/board/list", Method.GET, null, model);
 			}
 		}
 		catch (DataAccessException e){
-			System.out.println("데이터 처리 과정에 오류가 발생하였습니다.");
+			return showMessageWithRedirect("데이터 처리 과정에 오류가 발생하였습니다.", "/board/list", Method.GET, null, model);
 		}
 		catch(Exception e) {
-			System.out.println("시스템에 문제가 발생하였습니다.");
+			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", "/board/list", Method.GET, null, model);
 		}
-		return "redirect:/board/list"; 
+		return showMessageWithRedirect("게시물이 삭제가 완료되었습니다.", "/board/list", Method.GET, null, model);
 	}
 }
