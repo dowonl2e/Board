@@ -38,9 +38,9 @@
 			, #{content}
 			, #{writer}
 			, 0
-			, IFNULL(#{notice_yn}, 'N')
+			, IFNULL(#{noticeYn}, 'N')
 			, 'N'
-			, IFNULL(#{secret_yn}, 'N')
+			, IFNULL(#{secretYn}, 'N')
 			, NOW()
 			, NULL
 			, NULL
@@ -59,8 +59,8 @@
 		<if test='content != null and !content.equals("")'>
 			, CONTENT = #{content}
 		</if>
-		, NOTICE_YN = IFNULL(#{notice_yn}, 'N')
-		, SECRET_YN = IFNULL(#{secret_yn}, 'N')
+		, NOTICE_YN = IFNULL(#{noticeYn}, 'N')
+		, SECRET_YN = IFNULL(#{secretYn}, 'N')
 		WHERE NUM = #{num}
 	</update>
 	
