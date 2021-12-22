@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class LoggerInterceptor implements HandlerInterceptor {
 	
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass()); 
 
 	/**
 	 * 컨트롤러의 메서드에 매핑된 특정 URI를 호출했을 때 컨트롤러를 접근하기 전 실행되는 메서드
