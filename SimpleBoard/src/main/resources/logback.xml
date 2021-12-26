@@ -15,7 +15,7 @@
 	</appender>
 
 	<!-- Logger -->
-	<logger name="com.board" level="DEBUG" appender-ref="console" />
+	<logger name="com.myapp.board" level="DEBUG" appender-ref="console" />
 	<logger name="jdbc.connection" level="DEBUG" appender-ref="console-infolog" />
 	<logger name="jdbc.sqlonly" level="INFO" appender-ref="console-infolog" />
 	<logger name="jdbc.sqltiming" level="INFO" appender-ref="console-infolog" />
