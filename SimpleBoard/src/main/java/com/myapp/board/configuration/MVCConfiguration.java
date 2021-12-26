@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.myapp.board.interceptor.LoggerInterceptor;
 
 @Configuration
-public class MVCConfiguratiobn implements WebMvcConfigurer {
+public class MVCConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
