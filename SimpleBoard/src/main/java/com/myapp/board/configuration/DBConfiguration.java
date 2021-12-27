@@ -11,6 +11,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -22,11 +26,12 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration //자바 기반의 설정 파일로 인식
 @PropertySource("classpath:/application.properties") //해당 클래스에서 참조할 properties 파일의 위치를 지정
+@EnableTransactionManagement
 public class DBConfiguration {
 
 	@Autowired //빈(Bean)으로 등록된 인스턴스(이하 객체)를 클래스에 주입하는 데 사용합니다. ( := @Resource, @Inject )
 	private ApplicationContext applicationContext;
-
+	
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource.hikari") //spring.datasource.hikari로 시작하는 설정을 모두 읽기.
 	public HikariConfig hikariConfig() { //Connection Pool 객체 생성
@@ -65,6 +70,11 @@ public class DBConfiguration {
 	@ConfigurationProperties(prefix = "mybatis.configuration")
 	public org.apache.ibatis.session.Configuration mybatisConfg() {
 		return new org.apache.ibatis.session.Configuration();
+	}
+
+	@Bean
+	public TransactionManager transactionManager() {
+		return new DataSourceTransactionManager(dataSource());
 	}
 	
 }
