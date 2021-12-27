@@ -1,11 +1,15 @@
 package com.myapp.board.aop;
 
+import java.util.Collections;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 @Component
 @Aspect
@@ -33,10 +37,13 @@ public class LoggerAspect {
 		}
 		
 		logger.debug(type + name + "." + joinPoint.getSignature().getName() + "()");
-		for(Object param : params) {
-			logger.debug("Parameter ==> " + param.toString());
+		if(!ObjectUtils.isEmpty(params)) {
+			for(Object param : params) {
+				if(!ObjectUtils.isEmpty(param)) {
+					logger.debug("Parameter ==> " + param.toString());
+				}
+			}
 		}
-		
 		return joinPoint.proceed();
 	}
 }
