@@ -33,7 +33,7 @@ public class BoardServiceImpl implements BoardService {
 		
 		/**
 		 * 트랜잭션 테스트용 코드
-		 */
+		 */ 
 		
 		/*
 		boolean result = false;
