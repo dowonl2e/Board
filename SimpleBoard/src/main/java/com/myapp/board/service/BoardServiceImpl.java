@@ -30,7 +30,20 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public boolean setBoard(BoardDTO to) {
-		return (boardMapper.insertBoard(to) < 1 ? false : true);
+		
+		boolean result = false;
+		
+		if(to.getNum() == null) {
+			result = (boardMapper.insertBoard(to) < 1 ? false : true);
+		}
+		
+		/**
+		 * 트랜잭션 테스트용코
+		 */
+//		BoardDTO dto = null;
+//		System.out.println(dto.getTitle());
+		
+		return result;
 	}
 
 	@Override
