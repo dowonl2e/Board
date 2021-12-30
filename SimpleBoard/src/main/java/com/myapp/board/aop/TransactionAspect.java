@@ -27,8 +27,10 @@ public class TransactionAspect {
 	public TransactionInterceptor transactionAdvice() {
 		
 		List<RollbackRuleAttribute> rollbackRules = Collections.singletonList(new RollbackRuleAttribute(Exception.class));
-		for(RollbackRuleAttribute rollattr : rollbackRules) {
-			System.out.println(rollattr.toString());
+		if(rollbackRules != null) {
+			for(RollbackRuleAttribute rollattr : rollbackRules) {
+				System.out.println(rollattr.toString());
+			}
 		}
 		RuleBasedTransactionAttribute transactionAttribute = new RuleBasedTransactionAttribute();
 		
