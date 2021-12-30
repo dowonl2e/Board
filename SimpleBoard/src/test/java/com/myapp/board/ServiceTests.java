@@ -21,8 +21,7 @@ public class ServiceTests {
 	@Test
 	public void getBoardListTest() {
 		try {
-			BoardDTO to = new BoardDTO();
-			List<BoardDTO> boardlist = boardService.getBoardList(to);
+			List<BoardDTO> boardlist = boardService.getBoardList(new BoardDTO());
 			if(!CollectionUtils.isEmpty(boardlist)) {
 				System.out.println("게시물 목록 조회");
 				for(BoardDTO boardvo : boardlist) {
