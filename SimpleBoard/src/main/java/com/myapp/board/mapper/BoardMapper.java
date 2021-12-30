@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.myapp.board.domain.BoardDTO;
+import com.myapp.board.paging.Criteria;
 
 /*
  * 기존 Spring은 DAO 클래스에 @Repository 애너테이션을 선언해서 해당 클래스가 DB와 통신하는 클래스임을 나타냈음
@@ -14,9 +15,9 @@ import com.myapp.board.domain.BoardDTO;
 @Mapper
 public interface BoardMapper {
 	
-	public List<BoardDTO> selectBoardList(BoardDTO to);
+	public List<BoardDTO> selectBoardList(BoardDTO params);
 	
-	public Integer selectBoardListCount(BoardDTO to);
+	public Integer selectBoardListCount(BoardDTO params);
 	
 	public int insertBoard(BoardDTO to);
 	
@@ -26,5 +27,5 @@ public interface BoardMapper {
 
 	public int updateBoardVisitCnt(Long num);
 	
-	public int deleteBoard(BoardDTO to);
+	public int deleteBoard(Long num);
 }

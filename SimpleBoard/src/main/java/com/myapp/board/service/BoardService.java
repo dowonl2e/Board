@@ -6,15 +6,17 @@ import com.myapp.board.domain.BoardDTO;
 
 public interface BoardService {
 	
-	public List<BoardDTO> getBoardList(BoardDTO to);
+	public Integer getBoardListCount(BoardDTO params);
+	
+	public List<BoardDTO> getBoardList(BoardDTO params);
 
 	public boolean setBoard(BoardDTO to);
 	
 	public BoardDTO getBoard(Long num);
 	
-	public int modifyBoard(BoardDTO to);
+	public int modifyBoard(BoardDTO params);
 
-	public int removeBoard(BoardDTO to);
+	public int removeBoard(Long num);
 	
 
 }

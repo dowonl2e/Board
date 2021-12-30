@@ -9,6 +9,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.myapp.board.domain.BoardDTO;
 import com.myapp.board.mapper.BoardMapper;
+import com.myapp.board.paging.PaginationInfo;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -17,12 +18,27 @@ public class BoardServiceImpl implements BoardService {
 	private BoardMapper boardMapper;
 	
 	@Override
-	public List<BoardDTO> getBoardList(BoardDTO to) {
+	public Integer getBoardListCount(BoardDTO params) {
+		return boardMapper.selectBoardListCount(params);
+	}
+	
+	@Override
+	public List<BoardDTO> getBoardList(BoardDTO params) {
 		List<BoardDTO> boardList = Collections.emptyList();
 		
-		int boardlistcount = boardMapper.selectBoardListCount(to);
-		if(boardlistcount >= 0) {
-			boardList = boardMapper.selectBoardList(to);
+		int boardTotalCount = boardMapper.selectBoardListCount(params);
+		
+		/**
+		 * 1. BoardDTO의 Criteria에 페이지에 대한 기본 데이터 저장
+		 * 2. PaginationInfo에서 기본셋에서 페이징에 필요한 값 재정의
+		 * 3. 재정의 된 PaginationInfo의 객체를 다시 BoardDTO 객체에 추가
+		 */
+		PaginationInfo paginationInfo = new PaginationInfo(params);
+		paginationInfo.setTotalRecordCount(boardTotalCount);
+		params.setPaginationInfo(paginationInfo);
+		
+		if(boardTotalCount > 0) {
+			boardList = boardMapper.selectBoardList(params);
 		}
 		
 		return boardList;
@@ -57,21 +73,21 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public int modifyBoard(BoardDTO to) {
+	public int modifyBoard(BoardDTO params) {
 		int result = 0;
 		
-		BoardDTO vo = boardMapper.selectBoard(to.getNum());
+		BoardDTO vo = boardMapper.selectBoard(params.getNum());
 		if(ObjectUtils.isEmpty(vo)) {
 			result = -1;
 		}
 		else {
-			result = boardMapper.updateBoard(to);
+			result = boardMapper.updateBoard(params);
 		}
 		return result;
 	}
 	
 	@Override
-	public int removeBoard(BoardDTO to) {
+	public int removeBoard(Long num) {
 //		int result = 0;
 //		
 //		BoardDTO vo = boardMapper.selectBoard(to.getNum());
@@ -82,7 +98,7 @@ public class BoardServiceImpl implements BoardService {
 //			result = boardMapper.deleteBoard(to);
 //		}
 		
-		return boardMapper.deleteBoard(to);
+		return boardMapper.deleteBoard(num);
 	}
 
 }

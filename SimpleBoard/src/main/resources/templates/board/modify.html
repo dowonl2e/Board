@@ -6,8 +6,9 @@
 
 	<th:block layout:fragment="content">
 		<div class="card-content">
-			<form class="form-horizontal" th:action="@{/board/register}" th:object="${board}" method="post" onsubmit="return registerBoard(this)">
+			<form class="form-horizontal" th:action="@{/board/modify}" th:object="${board}" method="post" onsubmit="return registerBoard(this)">
 				<!--/* update의 경우 서버로 전달할 게시글 번호 (PK) */-->
+				<input type="hidden" th:if="*{num != null and num > 0}" th:field="*{num}" />
 
 				<div class="form-group">
 					<label for="noticeYn" class="col-sm-2 control-label">공지글 설정</label>
@@ -72,16 +73,18 @@
 					return false;
 				}
 
-				
-				var queryString = /*[[ ${params.makeQueryString(params.currentPageNo)} ]]*/;
+				var num = /*[[ ${board.num} ]]*/;
+				if (isEmpty(num) == false) {
+					var queryString = /*[[ ${params.makeQueryString(params.currentPageNo)} ]]*/;
 
-				/*[- 쿼리 스트링을 오브젝트 형태로 변환 -]*/
-				queryString = new URLSearchParams(queryString);
-				queryString.forEach(function(value, key) {
-					if (isEmpty(value) == false) {
-						$(form).append('<input type="hidden" name="' + key + '" value="' + value + '" />');
-					}
-				});
+					/*[- 쿼리 스트링을 오브젝트 형태로 변환 -]*/
+					queryString = new URLSearchParams(queryString);
+					queryString.forEach(function(value, key) {
+						if (isEmpty(value) == false) {
+							$(form).append('<input type="hidden" name="' + key + '" value="' + value + '" />');
+						}
+					});
+				}
 			}
 			/*[- end of function -]*/
 

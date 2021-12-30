@@ -17,13 +17,16 @@
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE DELETE_YN = 'N'
+		<include refid="commonMapper.search" />
 	</select>
 	
 	<select id="selectBoardList" parameterType="BoardDTO" resultType="BoardDTO">
 		SELECT <include refid="boardColumns" />
 		FROM BOARD
 		WHERE DELETE_YN = 'N'
-		ORDER BY NUM ASC
+		<include refid="commonMapper.search" />
+		ORDER BY NOTICE_YN ASC, NUM DESC, INSERT_TIME DESC
+		<include refid="commonMapper.paging" />
 	</select>
 	
 	<insert id="insertBoard" parameterType="BoardDTO">
