@@ -1,8 +1,16 @@
 package com.myapp.board.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
@@ -12,9 +20,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.myapp.board.constraint.Method;
 import com.myapp.board.domain.BoardDTO;
+import com.myapp.board.domain.FileDTO;
 import com.myapp.board.paging.Criteria;
 import com.myapp.board.service.BoardService;
 import com.myapp.board.util.UiUtils;
@@ -48,7 +58,6 @@ public class BoardController extends UiUtils {
 	public String write(@ModelAttribute("params") BoardDTO params, @RequestParam(value = "num", required=false) Long num, Model model) {
 		
 //		if(num == null) {
-//			model.addAttribute("board", new BoardDTO());
 //		}
 //		else {
 //			BoardDTO board = boardService.getBoard(num);
@@ -58,14 +67,16 @@ public class BoardController extends UiUtils {
 //			model.addAttribute("board", board);
 //		}
 		
+		model.addAttribute("board", new BoardDTO());
+		
 		return "board/write";
 	}
 	
 	@PostMapping(value = "/board/register")
-	public String registerBoard(@ModelAttribute("params") BoardDTO params, Model model) {
+	public String registerBoard(@ModelAttribute("params") BoardDTO params, final MultipartFile[] files, Model model) {
 		Map<String, Object> pagingParams = getPagingParams(params);
 		try {
-			boolean result = boardService.setBoard(params);
+			boolean result = boardService.setBoard(params, files);
 			if(!result) {
 				return showMessageWithRedirect("게시물 등록에 실패했습니다.", "/board/list", Method.GET, pagingParams, model);
 			}
@@ -91,16 +102,17 @@ public class BoardController extends UiUtils {
 				return showMessageWithRedirect("게시물이 없습니다.", "/board/list", Method.GET, pagingParams, model);
 			}
 			model.addAttribute("board", board);
+			model.addAttribute("fileList", boardService.getAttachFileList(num));
 		}
 		
-		return "board/write";
+		return "board/modify";
 	}
 	
 	@PostMapping(value = "/board/modify")
-	public String modifyBoard(@ModelAttribute("params") BoardDTO params, Model model) {
+	public String modifyBoard(@ModelAttribute("params") BoardDTO params, final MultipartFile[] files, Model model) {
 		Map<String, Object> pagingParams = getPagingParams(params);
 		try {
-			int result = boardService.modifyBoard(params);
+			int result = boardService.modifyBoard(params, files);
 			if(result < 0) {
 				return showMessageWithRedirect("수정 가능한 게시물이 없습니다.", "/board/list", Method.GET, pagingParams, model);
 			}
@@ -109,9 +121,11 @@ public class BoardController extends UiUtils {
 			}
 		}
 		catch (DataAccessException e){
+			e.printStackTrace();
 			return showMessageWithRedirect("데이터 처리 과정에 오류가 발생하였습니다.", "/board/list", Method.GET, pagingParams, model);
 		}
 		catch(Exception e) {
+			e.printStackTrace();
 			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", "/board/list", Method.GET, pagingParams, model);
 		}
 		return showMessageWithRedirect("게시물 수정이 완료되었습니다.", "/board/list", Method.GET, pagingParams, model);
@@ -129,8 +143,8 @@ public class BoardController extends UiUtils {
 		if(ObjectUtils.isEmpty(board)) {
 			return showMessageWithRedirect("조회 가능한 게시물이 없습니다.", "/board/list", Method.GET, null, model);
 		}
-		
 		model.addAttribute("board", board);
+		model.addAttribute("fileList", boardService.getAttachFileList(num));
 		
 		return "board/view";
 	}
@@ -167,5 +181,38 @@ public class BoardController extends UiUtils {
 		params.put("searchKeyword", criteria.getSearchKeyword());
 
 		return params;
+	}
+	
+	@GetMapping("/board/download")
+	public void downloadFile(@RequestParam(value = "fileNum", required = true) final Long fileNum, Model model, HttpServletResponse response) {
+		if (fileNum == null) throw new RuntimeException("올바르지 않은 접근입니다.");
+		
+		FileDTO fileInfo = boardService.getAttachFileDetail(fileNum);
+		if (fileInfo == null || "Y".equals(fileInfo.getDeleteYn())) {
+			throw new RuntimeException("파일 정보를 찾을 수 없습니다.");
+		}
+		
+		String uploadDate = fileInfo.getInsertTime().format(DateTimeFormatter.ofPattern("yyMMdd"));
+		String uploadPath = Paths.get(System.getProperty("user.home"), "spring-files", "upload", "SimpleBoard", uploadDate).toString();
+		
+		String filename = fileInfo.getOriginalName();
+		File file = new File(uploadPath, fileInfo.getSaveName());
+		try {
+			byte[] data = FileUtils.readFileToByteArray(file);
+			response.setContentType("application/octet-stream");
+			response.setContentLength(data.length);
+			response.setHeader("Content-Transfer-Encoding", "binary");
+			response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(filename, "UTF-8") + "\";");
+
+			response.getOutputStream().write(data);
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+
+		} catch (IOException e) {
+			throw new RuntimeException("파일 다운로드에 실패하였습니다.");
+
+		} catch (Exception e) {
+			throw new RuntimeException("시스템에 문제가 발생하였습니다.");
+		}
 	}
 }

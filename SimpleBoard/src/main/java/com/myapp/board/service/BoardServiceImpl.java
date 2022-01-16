@@ -5,17 +5,28 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.myapp.board.domain.BoardDTO;
+import com.myapp.board.domain.FileDTO;
 import com.myapp.board.mapper.BoardMapper;
+import com.myapp.board.mapper.FileMapper;
 import com.myapp.board.paging.PaginationInfo;
+import com.myapp.board.util.FileUtils;
 
 @Service
 public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	private BoardMapper boardMapper;
+	
+	@Autowired
+	private FileMapper fileMapper;
+	
+	@Autowired
+	private FileUtils fileUtils;
 	
 	@Override
 	public Integer getBoardListCount(BoardDTO params) {
@@ -68,6 +79,25 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	public boolean setBoard(BoardDTO to, MultipartFile[] files) {
+		int result = 1;
+		
+		if(setBoard(to) == false) {
+			return false;
+		}
+		
+		List<FileDTO> fileList = fileUtils.uploadFiles(files, to.getNum());
+		if(CollectionUtils.isEmpty(fileList) == false) {
+			result = fileMapper.insertFile(fileList);
+			if(result < 1) {
+				result = 0;
+			}
+		}
+		
+		return (result > 0);
+	}
+	
+	@Override
 	public BoardDTO getBoard(Long num) {
 		return boardMapper.selectBoard(num);
 	}
@@ -87,6 +117,32 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
+	public int modifyBoard(BoardDTO params, MultipartFile[] files) {
+		int result = modifyBoard(params);
+		
+		if(result > 0) {
+			// 파일이 추가, 삭제, 변경된 경우
+			if ("Y".equals(params.getChangeYn())) {
+				fileMapper.deleteFile(params.getNum());
+
+				// fileIdxs에 포함된 idx를 가지는 파일의 삭제여부를 'N'으로 업데이트
+				if (CollectionUtils.isEmpty(params.getFileNums()) == false) {
+					fileMapper.undeleteFile(params.getFileNums());
+				}
+				
+				List<FileDTO> fileList = fileUtils.uploadFiles(files, params.getNum());
+				if(CollectionUtils.isEmpty(fileList) == false) {
+					result = fileMapper.insertFile(fileList);
+					if(result < 1) {
+						result = 0;
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	@Override
 	public int removeBoard(Long num) {
 //		int result = 0;
 //		
@@ -101,4 +157,18 @@ public class BoardServiceImpl implements BoardService {
 		return boardMapper.deleteBoard(num);
 	}
 
+	@Override
+	public List<FileDTO> getAttachFileList(Long boardNum) {
+		int fileTotalCount = fileMapper.selectFileTotalCount(boardNum);
+		if (fileTotalCount < 1) {
+			return Collections.emptyList();
+		}
+		return fileMapper.selectFileList(boardNum);
+	}
+
+	@Override
+	public FileDTO getAttachFileDetail(Long fileNum) {
+		return fileMapper.selectFileDetail(fileNum);
+	}
+	
 }

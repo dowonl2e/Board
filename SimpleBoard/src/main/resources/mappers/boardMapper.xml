@@ -29,7 +29,7 @@
 		<include refid="commonMapper.paging" />
 	</select>
 	
-	<insert id="insertBoard" parameterType="BoardDTO">
+	<insert id="insertBoard" parameterType="BoardDTO" useGeneratedKeys="true" keyProperty="num">
 		INSERT INTO BOARD 
 		(
 			<include refid="boardColumns" />
