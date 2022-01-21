@@ -15,14 +15,14 @@
 	
 	<select id="selectBoardListCount" parameterType="BoardDTO" resultType="Integer">
 		SELECT COUNT(*)
-		FROM BOARD
+		FROM TB_BOARD
 		WHERE DELETE_YN = 'N'
 		<include refid="commonMapper.search" />
 	</select>
 	
 	<select id="selectBoardList" parameterType="BoardDTO" resultType="BoardDTO">
 		SELECT <include refid="boardColumns" />
-		FROM BOARD
+		FROM TB_BOARD
 		WHERE DELETE_YN = 'N'
 		<include refid="commonMapper.search" />
 		ORDER BY NOTICE_YN ASC, NUM DESC, INSERT_TIME DESC
@@ -30,7 +30,7 @@
 	</select>
 	
 	<insert id="insertBoard" parameterType="BoardDTO" useGeneratedKeys="true" keyProperty="num">
-		INSERT INTO BOARD 
+		INSERT INTO TB_BOARD 
 		(
 			<include refid="boardColumns" />
 		) 
@@ -51,7 +51,7 @@
 	</insert>
 	
 	<update id="updateBoard" parameterType="BoardDTO">
-		UPDATE BOARD
+		UPDATE TB_BOARD
 		SET UPDATE_TIME = NOW()
 		<if test='writer != null and !writer.equals("")'>
 			, WRITER = #{writer}
@@ -68,20 +68,20 @@
 	</update>
 	
 	<update id="updateBoardVisitCnt" parameterType="long">
-		UPDATE BOARD 
+		UPDATE TB_BOARD 
 		SET VISIT_CNT = VISIT_CNT+1
 		WHERE NUM = #{num}
 	</update>
 	
 	<select id="selectBoard" parameterType="long" resultType="BoardDTO">
 		SELECT <include refid="boardColumns" />
-		FROM BOARD
+		FROM TB_BOARD
 		WHERE NUM = #{num}
 		AND DELETE_YN = 'N'
 	</select>
 	
 	<update id="deleteBoard" parameterType="long">
-		UPDATE BOARD
+		UPDATE TB_BOARD
 		SET DELETE_TIME = NOW()
 		, DELETE_YN = 'Y'
 		<if test='writer != null and !writer.equals("")'>
